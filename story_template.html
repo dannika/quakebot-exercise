@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html leng="en">
+    <head>
+        <title>{{ title }}</title>
+        <style>* {font-weight:bold}</style>
+    </head>
+    <body>
+        <!-- Calculate the difference in number of large quakes between past two days and store as var difference -->
+        {% set abs_diff = (num_large_quakes_yesterday - large_quakes_count)|abs %}
+        {% set difference = '' %}
+        {% if num_large_quakes_yesterday > large_quakes_count %}
+            {% set difference = abs_diff|string + ' more than' %}
+        {% elif num_large_quakes_yesterday == large_quakes_count %}
+            {% set difference = 'same as' %}
+        {% else %}
+            {% set difference = abs_diff|string + ' less than' %}
+        {% endif %}
+
+        <h2>{{ title }}</h2>
+        <p>{{ "There were %d earthquakes in the last 24 hours, including %d of magnitude 5.0 or greater."|format(num_quakes, large_quakes_count) }}</p>
+        <p>{{ "The previous 24-hour period had %d large earthquakes, %s the current 24-hour period."|format(num_large_quakes_yesterday, difference) }}</p>
+        <p>The five largest earthquakes were:</p>
+
+        <ul>
+            {% for quake in large_quakes %}
+                <li>{{ "%s (%.1f)"|format(quake['properties']['place'], quake['properties']['mag']) }}</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
